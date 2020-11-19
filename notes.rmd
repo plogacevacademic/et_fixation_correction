@@ -1,0 +1,36 @@
+---
+title: "Eyetracking fixation correction"
+author: "Pavel Logacev"
+date: "11/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goals
+
+- The current aim is to take a sequence of *observed* fixation coordinates pairs $<\alpha_1, \alpha_2, \ldots, \alpha_n>$ and to map it to a sequence of fixations on words $<w_k, w_l, ..., w_m>$ by way of first reconstructing from it a series of *'actual'* (more likely) fixations $<\alpha_1', \alpha_2', \ldots, \alpha_n'>$, given what we know about the stimulus presented and what we know about reading. Fixation durations will be taken as given (for now).
+
+- *Ultimately*, I'd like to go from raw samples to $<\alpha_1', \alpha_2', \ldots, \alpha_n'>$ incorporating (motivated) assumptions about the way the eyes move together and coordinate, what happens during blinks, the fact that one eye is dominant and seems to lead, etc. 
+
+- *As an intermediate step*, we can incorporate some of the assumptions mentioned in the above point while still working with the output of `saccades`, since it provides some measures of uncertainty.  
+
+
+## A first model
+
+- We'll want to get a MAP estimate of $argmax~P(A'|A, M)$, where $A=<\alpha_1, \ldots, \alpha_n>$, $A'=<\alpha_1', \ldots, \alpha_n'>$, and $M$ is the model incorporating our knowledge (or vague assumptions) about (i) the stimulus, and (ii) some aspects of the reading process
+
+- According to Bayes' Theorem: $P(A'|A,M) = P(A|A',M)\cdot P(A',M)$
+  * $P(A'|A,M)$ is what we want to maximize. 
+  * $P(A|A',M)$ is the term that models the measurement error (and other things?)
+  * $P(A',M)$ is includes most theoretical knowledge, I guess?
+  
+- I don't think I actually want to optimize $A'$ - that's just too many parameters. Estimating the parameters $\theta_M$ of the model, and then caculating $A'$ from $A$ and $\theta_M$ seems like a better approach, if possible. 
+
+### Some random facts the model will need to reflect (negotiable)
+- Readers read most words in the sentence (may actually be wrong for some uncooperative participants)
+- Longer words are more likely to be fixated
+- 
+
